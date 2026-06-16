@@ -2,8 +2,11 @@ const gridSize = 8;
 const grid = [];
 let score = 0;
 let highScore = localStorage.getItem('blockOhioHighScore') || 0;
+let level = 1;
+
 const scoreDisplay = document.getElementById("score");
 const highScoreDisplay = document.getElementById("high-score");
+const levelDisplay = document.getElementById("level-display");
 const gridContainer = document.getElementById("grid");
 const piecesContainer = document.getElementById("pieces");
 const gameOverDisplay = document.getElementById("game-over");
@@ -13,6 +16,17 @@ const restartBtn2 = document.getElementById("restart-btn-2");
 const quitBtn = document.getElementById("quit-btn");
 const hintBtn = document.getElementById("hint-btn");
 const newBlocksBtn = document.getElementById("new-blocks-btn");
+
+// HP buttons
+const hpHintBtn = document.getElementById("hp-hint-btn");
+const hpNewBlocksBtn = document.getElementById("hp-new-blocks-btn");
+const hpRestartBtn = document.getElementById("hp-restart-btn");
+
+// NAME SCREEN
+const nameScreen = document.getElementById('nameScreen');
+const nameInput = document.getElementById('nameInput');
+const nameHint = document.getElementById('nameHint');
+let playerName = '';
 
 const placeSound = document.getElementById("place-sound");
 const clearSound = document.getElementById("clear-sound");
@@ -35,15 +49,32 @@ let dragState = {
   startY: 0
 };
 
+// NAME INPUT
+nameInput.addEventListener('input', () => {
+    nameHint.textContent = nameInput.value.trim() ? 'Tekan ENTER buat mulai' : 'Ketik nama...';
+    nameHint.classList.toggle('active', !!nameInput.value.trim());
+});
+
+nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && nameInput.value.trim()) {
+        playerName = nameInput.value.trim();
+        nameScreen.classList.remove('active');
+        initGame();
+    }
+});
+
 // Init
 function initGame() {
   score = 0;
+  level = 1;
   scoreDisplay.textContent = score;
   highScoreDisplay.textContent = highScore;
+  levelDisplay.textContent = level;
   grid.length = 0;
   createGrid();
   generateRandomPieces();
   gameOverDisplay.classList.remove("visible");
+  gameOverDisplay.classList.remove("active");
   
   dragState = {
     isDragging: false,
@@ -372,6 +403,10 @@ function checkClear() {
   });
 
   if (fullRows.length > 0 || fullCols.length > 0) {
+    // Update level
+    level = Math.floor(score / 100) + 1;
+    levelDisplay.textContent = level;
+    
     scoreDisplay.textContent = score;
     scoreDisplay.animate([
       { transform: 'scale(1)' },
@@ -391,9 +426,9 @@ function checkClear() {
       highScoreDisplay.textContent = highScore;
       
       highScoreDisplay.animate([
-        { color: 'var(--accent)', transform: 'scale(1)' },
+        { color: '#800000', transform: 'scale(1)' },
         { color: '#ffdd00', transform: 'scale(1.3)' },
-        { color: 'var(--accent)', transform: 'scale(1)' }
+        { color: '#800000', transform: 'scale(1)' }
       ], {
         duration: 600,
         easing: 'ease-in-out'
@@ -418,6 +453,7 @@ function isGameOver() {
 function showGameOver() {
   finalScoreDisplay.textContent = score;
   gameOverDisplay.classList.add("visible");
+  gameOverDisplay.classList.add("active");
   gameOverSound.play().catch(e => {});
 }
 
@@ -449,14 +485,25 @@ function showHint() {
 // Event listeners
 restartBtn.addEventListener("click", initGame);
 restartBtn2.addEventListener("click", initGame);
+hpRestartBtn.addEventListener("click", initGame);
 
 quitBtn.addEventListener("click", () => {
-  alert("Thanks for playing Block Ohio! Your final score: " + score);
+  gameOverDisplay.classList.remove("visible");
+  gameOverDisplay.classList.remove("active");
+  nameScreen.classList.add("active");
+  nameInput.value = '';
+  nameInput.focus();
 });
 
 hintBtn.addEventListener("click", showHint);
+hpHintBtn.addEventListener("click", showHint);
 
 newBlocksBtn.addEventListener("click", () => {
+  if (piecesContainer.children.length > 0) {
+    generateRandomPieces();
+  }
+});
+hpNewBlocksBtn.addEventListener("click", () => {
   if (piecesContainer.children.length > 0) {
     generateRandomPieces();
   }
@@ -467,5 +514,10 @@ gridContainer.addEventListener("touchstart", (e) => {
   e.preventDefault();
 }, { passive: false });
 
-// Init
-window.onload = initGame;
+// Init - Tampilin name screen dulu
+window.onload = () => {
+  nameScreen.classList.add("active");
+  nameInput.focus();
+  highScoreDisplay.textContent = highScore;
+  levelDisplay.textContent = '1';
+};

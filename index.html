@@ -1,91 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Block Ohio | Premium Puzzle Game</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Block Ohio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-  <div class="background-graphic"></div>
-  
-  <div class="container">
-    <header>
-      <div class="logo">
-        <i class="fas fa-dice-d20"></i>
-        <h1>BLOCK <span>OHIO</span></h1>
-      </div>
-      <div class="score-container">
-        <div class="score-box">
-          <div class="score-label">SCORE</div>
-          <div id="score" class="score-value">0</div>
+    <div id="gameWrapper">
+        <!-- HEADER / HUD DI LUAR CANVAS -->
+        <div id="gameHeader">
+            <div class="hud-left">
+                <div class="score-box">
+                    <div class="score-label">SCORE</div>
+                    <div id="score" class="score-value">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">HIGH SCORE</div>
+                    <div id="high-score" class="score-value">0</div>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="score-box">
+                    <div class="score-label">LEVEL</div>
+                    <div id="level-display" class="score-value">1</div>
+                </div>
+            </div>
         </div>
-        <div class="score-box">
-          <div class="score-label">HIGH SCORE</div>
-          <div id="high-score" class="score-value">0</div>
+
+        <!-- GAME CONTAINER (Canvas/CSS Grid) -->
+        <div id="gameContainer">
+            <div id="grid" class="game-grid"></div>
         </div>
-      </div>
-    </header>
-    
-    <div class="main-content">
-      <div class="game-area">
-        <div class="grid-section">
-          <h2>GAME BOARD <i class="fas fa-border-all"></i></h2>
-          <div id="grid" class="game-grid"></div>
+
+        <!-- AVAILABLE BLOCKS -->
+        <div id="piecesSection">
+            <div class="section-label">🧩 AVAILABLE BLOCKS</div>
+            <div id="pieces" class="pieces-wrapper"></div>
         </div>
-      </div>
-      
-      <div class="side-panel">
-        <div class="available-pieces">
-          <h2>AVAILABLE BLOCKS <i class="fas fa-shapes"></i></h2>
-          <div id="pieces" class="pieces-container"></div>
-        </div>
-        
-        <div class="game-controls">
-          <h2>CONTROLS <i class="fas fa-gamepad"></i></h2>
-          <div class="game-buttons">
-            <button id="hint-btn" class="btn">
-              <i class="fas fa-lightbulb"></i> HINT
+
+        <!-- CONTROLS -->
+        <div id="controlsSection">
+            <button id="hint-btn" class="ctrl-btn">
+                <i class="fas fa-lightbulb"></i> HINT
             </button>
-            <button id="new-blocks-btn" class="btn">
-              <i class="fas fa-sync"></i> NEW SHAPES
+            <button id="new-blocks-btn" class="ctrl-btn">
+                <i class="fas fa-sync"></i> NEW SHAPES
             </button>
-            <button id="restart-btn" class="btn">
-              <i class="fas fa-redo"></i> RESTART
+            <button id="restart-btn" class="ctrl-btn">
+                <i class="fas fa-redo"></i> RESTART
             </button>
-          </div>
         </div>
-      </div>
+
+        <!-- HP CONTROLS -->
+        <div id="hpControls">
+            <button id="hp-hint-btn" class="ctrl-btn">💡</button>
+            <button id="hp-new-blocks-btn" class="ctrl-btn">🔄</button>
+            <button id="hp-restart-btn" class="ctrl-btn">🔁</button>
+        </div>
+
+        <!-- NAME SCREEN -->
+        <div id="nameScreen" class="overlay active">
+            <div class="screen-content">
+                <h1 class="game-title">🧱 BLOCK OHIO</h1>
+                <p class="subtitle">masukin nama yaa :</p>
+                <div class="input-wrapper">
+                    <input type="text" id="nameInput" maxlength="15" placeholder="Ketik nama..." autofocus />
+                </div>
+                <p id="nameHint" class="hint">Tekan ENTER buat mulai</p>
+            </div>
+        </div>
+
+        <!-- GAME OVER -->
+        <div id="game-over" class="overlay">
+            <div class="screen-content">
+                <h2 class="status-title">💀 GAME OVER</h2>
+                <p class="gameover-sub">No more moves available</p>
+                <p class="final-score">Your score: <span id="final-score">0</span></p>
+                <div class="menu-options">
+                    <button id="restart-btn-2" class="menu-btn restart-btn">🔄 Restart</button>
+                    <button id="quit-btn" class="menu-btn quit-btn">🚪 Keluar</button>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="instructions">
-      <p><i class="fas fa-mouse-pointer"></i> Drag & drop blocks to the grid</p>
-      <p><i class="fas fa-gamepad"></i> Complete rows or columns to clear them</p>
-      <p><i class="fas fa-broom"></i> Clear lines to earn points</p>
-    </div>
-  </div>
-  
-  <div id="game-over" class="game-over">
-    <div class="game-over-content">
-      <h2>GAME OVER</h2>
-      <div class="final-score">Your score: <span id="final-score">0</span></div>
-      <p>No more moves available</p>
-      <div class="game-over-buttons">
-        <button id="restart-btn-2" class="btn large">
-          <i class="fas fa-redo"></i> RESTART
-        </button>
-        <button id="quit-btn" class="btn large">
-          <i class="fas fa-door-open"></i> QUIT
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <audio id="place-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
-  <audio id="clear-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
-  <audio id="game-over-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-game-over-470.mp3"></audio>
-  
-  <script src="script.js"></script>
+
+    <!-- AUDIO -->
+    <audio id="place-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3"></audio>
+    <audio id="clear-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+    <audio id="game-over-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-retro-arcade-game-over-470.mp3"></audio>
+
+    <script src="script.js"></script>
 </body>
 </html>
